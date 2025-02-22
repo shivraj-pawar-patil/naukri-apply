@@ -3,8 +3,9 @@ const puppeteer = require('puppeteer');
 
 (async () => {
   const browser = await puppeteer.launch({
-    headless: 'new', // Use 'new' for stability in Puppeteer 19+
+    headless: false, // Set to true if running on a server
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    slowMo: 50, // Slows down actions to mimic human behavior
   });
 
   const page = await browser.newPage();
@@ -14,8 +15,13 @@ const puppeteer = require('puppeteer');
     console.log('🔄 Navigating to Naukri login...');
     await page.goto('https://www.naukri.com/mnjuser/homepage', { waitUntil: 'networkidle2' });
 
-    // Click on the login button
-    await page.click('a[href*="login"]');
+    // Wait for and click on the login button
+    await page.waitForSelector('a[href*="login"], .nI-gNb-lg-rg__login', { timeout: 20000 });
+    await page.evaluate(() => {
+      const loginBtn = document.querySelector('a[href*="login"], .nI-gNb-lg-rg__login');
+      if (loginBtn) loginBtn.click();
+    });
+
     await page.waitForSelector('#usernameField', { timeout: 15000 });
 
     // Fill in credentials and login
