@@ -3,9 +3,8 @@ const puppeteer = require('puppeteer');
 
 (async () => {
   const browser = await puppeteer.launch({
-    headless: false, // Set to false to see the browser actions
+    headless: 'new', // Use 'new' for stability in Puppeteer 19+
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    slowMo: 50, // Slows down actions to mimic human behavior
   });
 
   const page = await browser.newPage();
